@@ -1,7 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument } from 'mongoose'
+import { OptionType, Operation } from './../enum/enums'
 
 export type TradeDocument = HydratedDocument<Trade>
+
+export class Option {
+  @Prop({ required: true })
+  quantity: number
+
+  @Prop({ required: true })
+  strike: number
+
+  @Prop({ required: true })
+  price: number
+
+  @Prop({ required: true, type: String, enum: OptionType, default: OptionType.CALL })
+  type: OptionType
+
+  @Prop({ type: Date, required: true })
+  dueDate: Date
+}
 
 @Schema()
 export class Trade {
@@ -9,16 +27,19 @@ export class Trade {
   stock: string
 
   @Prop({ required: true })
-  strike: number
+  quantity: number
 
-  @Prop({ required: true, type: String, enum: OptionType, default: OptionType.Call })
-  optionType: OptionType
+  @Prop({ required: true })
+  price: number
 
-  @Prop({ required: true, type: String, enum: Operation, default: Operation.Buy })
+  @Prop({ required: false })
+  option: Option
+
+  @Prop({ required: true, type: String, enum: Operation, default: Operation.BUY })
   operation: Operation
 
   @Prop({ type: Date, required: true })
-  dueDate: Date
+  createdAt: Date
 }
 
-export const UserSchema = SchemaFactory.createForClass(Trade)
+export const TradeSchema = SchemaFactory.createForClass(Trade)

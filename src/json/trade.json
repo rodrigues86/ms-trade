@@ -1,0 +1,13 @@
+{
+     "stock":"PETR4",
+     "quantity": 100,
+     "price": 37.87,
+     "option": {
+          "type": "PUT",
+          "price": 0.58,
+          "strike": 34.98,
+          "dueDate": "2023-06-07T15:52:05-02"
+     },
+     "operation": "BUY",
+     "createdAt": "2023-06-07T15:52:05-02"
+}

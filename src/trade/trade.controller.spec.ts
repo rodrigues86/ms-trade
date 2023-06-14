@@ -1,34 +1,85 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TradeController } from './trade.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { TradeController } from './trade.controller'
+import { TradeService } from './trade.service'
+import { getModelToken } from '@nestjs/mongoose'
+import { Option, Trade } from './trade.schema'
+import { Operation, OptionType } from './../enum/enums'
 
-describe('ExampleController', () => {
-  let controller: TradeController;
+describe('controller', () => {
+  let controller: TradeController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TradeController],
-    }).compile();
+      providers: [
+        TradeService,
+        {
+          provide: getModelToken(Trade.name),
+          useValue: {}
+        }
+      ]
+    }).compile()
 
-    controller = module.get<TradeController>(TradeController);
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
-  describe('findAll', () => {
-    it('should return a message for GET requests', () => {
-      expect(controller.findAll()).toEqual({ message: 'GET method response' });
-    });
-  });
+    controller = module.get<TradeController>(TradeController)
+  })
 
   describe('create', () => {
-    it('should return a message with the provided data for POST requests', () => {
-      const testData = { id: 1, name: 'Test' };
-      expect(controller.create(testData)).toEqual({
-        message: 'POST method response',
-        data: testData,
-      });
-    });
-  });
-});
+    it('should create an user', async () => {
+      const option: Option = {
+        quantity: 100,
+        type: OptionType.PUT,
+        price: 0.58,
+        strike: 34.98,
+        dueDate: new Date()
+      }
+      const data = {
+        stock: 'PETR4',
+        quantity: 100,
+        price: 37.87,
+        option,
+        operation: Operation.BUY,
+        createdAt: new Date()
+      }
+      const createdTest = { ...data, _id: 'mockedUserId' }
+
+      jest.spyOn(controller, 'create').mockResolvedValue(createdTest)
+
+      const result = await controller.create(data)
+      expect(result).toEqual(createdTest)
+    })
+  })
+
+  describe('findAll', () => {
+    it('should return all users', async () => {
+      const option: Option = {
+        quantity: 100,
+        type: OptionType.PUT,
+        price: 0.58,
+        strike: 34.98,
+        dueDate: new Date()
+      }
+      const data1 = {
+        stock: 'PETR4',
+        quantity: 100,
+        price: 37.87,
+        option,
+        operation: Operation.BUY,
+        createdAt: new Date()
+      }
+      const data2 = {
+        stock: 'PETR4',
+        quantity: 100,
+        price: 36.47,
+        option,
+        operation: Operation.SELL,
+        createdAt: new Date()
+      }
+      const list = [data1, data2]
+
+      jest.spyOn(controller, 'findAll').mockResolvedValue(list)
+
+      const result = await controller.findAll()
+      expect(result).toEqual(list)
+    })
+  })
+})

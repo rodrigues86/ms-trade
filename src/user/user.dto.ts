@@ -1,5 +1,6 @@
 export class UserDTO {
-  source: string;
-  icfsCountryCode: string;
-  isoCountryCode: string;
+  userName: string
+  email: string
+  fullName: string
+  age: number
 }

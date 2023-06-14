@@ -1,5 +1,7 @@
-export class UserDTO {
+import { Option } from './trade.schema'
+
+export class TradeDTO {
   stock: string
-  type: string
-  dueDate: Date
+  option: object
+  quantity: number
 }
